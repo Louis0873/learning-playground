@@ -46,21 +46,18 @@ function teacherLogin(){
   const input=document.getElementById("teacherPassword");
   const err=document.getElementById("loginErr");
   const pw=input ? input.value.trim() : "";
-  const data=JSON.parse(localStorage.getItem(K)||"null");
-  const correct=(data&&data.teacherPassword)||s.teacherPassword||"123456";
-  if(!pw){if(err)err.textContent="请输入教师密码";return;}
-  if(String(pw)!==String(correct)){
-    if(err)err.textContent="密码错误，请重新输入";
-    if(input){input.value="";input.focus();}
-    return;
+  const correct=(s&&s.teacherPassword)?String(s.teacherPassword):"123456";
+  if(!pw){if(err)err.textContent="请输入教师密码";return false;}
+  if(pw!==correct){
+    if(err)err.textContent="密码错误，请输入正确密码";
+    if(input){input.focus();input.select();}
+    return false;
   }
-  if(data) s=data;
-  s.teacherPassword=correct;
-  localStorage.setItem(K,JSON.stringify(s));
   document.getElementById("loginScreen").classList.add("hide");
   document.getElementById("teacherApp").classList.remove("hide");
   page="home";
   render();
+  return false;
 }
 function recalcStudent(x){
   x.logs=x.logs||[];
@@ -71,9 +68,9 @@ function recalcAll(){
   s.students.forEach(recalcStudent);
 }
 function save(){recalcAll();localStorage.setItem(K,JSON.stringify(s));render()}
-function today(){document.getElementById("today").textContent="📅 "+new Date().toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"})}
+function today(){const el=document.getElementById("today");if(!el)return;el.textContent="📅 "+new Date().toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"})}
 function go(p,id){page=p;if(id!==undefined)selected=id;render()}
-function render(){today();document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("pageTitle").textContent={home:"首页",students:"学生管理",points:"积分管理",wheel:"转盘抽奖",redeem:"兑换奖励",records:"积分记录",settings:"系统设置",accounts:""}[page];let c=document.getElementById("content");if(page==="home")c.innerHTML=home();if(page==="students")c.innerHTML=studentsPage();if(page==="points")c.innerHTML=pointsPage();if(page==="wheel")c.innerHTML=wheelPage();if(page==="redeem")c.innerHTML=redeemPage();if(page==="records")c.innerHTML=recordsPage();if(page==="settings")c.innerHTML=settingsPage();if(page==="accounts")c.innerHTML=accountsPage();if(page==="wheel")renderWheel()}
+function render(){today();document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("pageTitle").textContent={home:"首页",students:"学生管理",points:"积分管理",wheel:"转盘抽奖",redeem:"兑换奖励",records:"积分记录",settings:"系统设置",accounts:""}[page];let c=document.getElementById("content");if(page==="home")c.innerHTML=home();if(page==="students")c.innerHTML=studentsPage();if(page==="points")c.innerHTML=pointsPage();if(page==="wheel")c.innerHTML=wheelPage();if(page==="redeem")c.innerHTML=redeemPage();if(page==="records")c.innerHTML=recordsPage();if(page==="settings")c.innerHTML=settingsPage();if(page==="wheel")renderWheel()}
 function home(){let total=s.students.length,sum=s.students.reduce((a,x)=>a+x.p,0),top=[...s.students].sort((a,b)=>b.p-a.p).slice(0,5);return '<div class="grid"><div class="card stat"><span>学生人数</span><b>'+total+'</b><span>当前班级</span></div><div class="card stat"><span>当前总积分</span><b>'+sum+'</b><span>所有学生合计</span></div><div class="card stat"><span>今日日期</span><b style="font-size:19px">'+new Date().toLocaleDateString("zh-CN")+'</b><span>系统自动记录</span></div><div class="card stat"><span>抽奖记录</span><b>'+s.history.length+'</b><span>累计抽奖次数</span></div></div><div class="card"><div class="sectionTitle">⚡ 快捷操作</div><div class="actions"><button class="green" onclick="go('points')">给学生加分</button><button class="gold" onclick="go('wheel')">开始抽奖</button><button class="pink" onclick="go('redeem')">兑换奖励</button></div></div><div class="card" style="max-width:780px"><div class="sectionTitle">🏆 当前积分排行榜 <span class="muted">· 前 5 名</span></div>'+leaderHTML(top)+'</div><div class="card"><div class="sectionTitle">🦖 我的恐龙养成乐园</div><div class="muted" style="margin-bottom:14px">每位学生都有自己的恐龙蛋，用课堂积分照顾它，从蛋一步步养成成年恐龙。</div>'+petCardsHTML()+'</div></div>'}
 function petLevel(exp){return Math.floor(Math.max(0,Number(exp)||0)/100)+1}
 function petProgress(exp){return Math.max(0,Number(exp)||0)%100}
@@ -95,7 +92,7 @@ function addReward(){let n=document.getElementById("newRewardName").value.trim()
 function saveReward(i){let n=document.getElementById("rewardName"+i).value.trim(),p=Number(document.getElementById("rewardPoints"+i).value);if(!n||!Number.isInteger(p)||p<1)return alert("请输入有效的奖品名称和积分");if(rewards.some((r,j)=>j!==i&&r.n===n))return alert("这个奖品已经存在");rewards[i]={n,p};s.rewards=rewards;save();go("settings")}
 function deleteReward(i){if(!confirm("确定删除「"+rewards[i].n+"」？删除后不会影响已经产生的兑换记录。"))return;rewards.splice(i,1);s.rewards=rewards;save();go("settings")}
 function saveTeacherPassword(){let p=document.getElementById("teacherNewPw").value;if(!p)return alert("请输入新密码");if(p.length<4)return alert("密码至少 4 位");s.teacherPassword=p;save();alert("教师密码已更新")}function clearHistory(){if(confirm("确定清除所有抽奖记录？")){s.history=[];save()}}
-function clearAll(){if(confirm("确定删除全部学生、积分及记录？")){s={students:[],history:[],auto:true};save();go("home")}}
+function clearAll(){if(confirm("确定删除全部学生、积分及记录？")){s={students:[],history:[],auto:true,teacherPassword:(s.teacherPassword||"123456"),rewards:(s.rewards||rewards)};save();go("home")}}
 function exportData(){let b=new Blob([JSON.stringify(s,null,2)],{type:"application/json;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="班级积分数据-"+new Date().toISOString().slice(0,10)+".json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 setInterval(today,60000);render();
 </script>
