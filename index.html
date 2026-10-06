@@ -8,7 +8,10 @@
 </style>
 </head>
 <body>
-<div id="loginScreen" class="loginScreen"><div class="loginBox"><h1>📚 学习乐园</h1><div class="muted">教师后台登录</div><button class="gray" style="width:100%" onclick="showTeacherLogin()">👨‍🏫 教师后台</button><div id="loginForms" class="hide"></div></div></div>
+<div id="loginScreen" class="loginScreen"><div class="loginBox"><h1>📚 学习乐园</h1><div class="muted">请选择登录入口</div>
+<button class="blue" style="width:100%;margin-bottom:10px" onclick="showStudentLogin()">👨‍🎓 学生登录</button>
+<button class="gray" style="width:100%" onclick="showTeacherLogin()">👨‍🏫 教师后台</button>
+<div id="loginForms" class="hide"></div></div></div>
 <div id="studentPortal" class="hide"></div>
 <div id="teacherApp" class="app hide">
 <aside class="side"><div class="brand">📚 学习乐园<small>Learning Playground</small></div><div class="nav">
@@ -18,7 +21,7 @@
 <button data-page="wheel" onclick="go('wheel')">◉　转盘抽奖</button>
 <button data-page="redeem" onclick="go('redeem')">🎁　兑换奖励</button>
 <button data-page="records" onclick="go('records')">▤　积分记录</button>
-<button data-page="settings" onclick="go('settings')">⚙　设置</button>
+<button data-page="accounts" onclick="go('accounts')">🔐　学生账号</button><button data-page="settings" onclick="go('settings')">⚙　设置</button>
 </div></aside>
 <main class="main"><div class="top"><div><div id="pageTitle" class="pageTitle">首页</div><div id="today" class="date"></div></div><span class="badge">教师班级管理</span></div><div id="content" class="content"></div></main>
 </div>
@@ -43,7 +46,7 @@ function recalcAll(){
 function save(){recalcAll();localStorage.setItem(K,JSON.stringify(s));render()}
 function today(){document.getElementById("today").textContent="📅 "+new Date().toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"})}
 function go(p,id){page=p;if(id!==undefined)selected=id;render()}
-function render(){today();document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("pageTitle").textContent={home:"首页",students:"学生管理",points:"积分管理",wheel:"转盘抽奖",redeem:"兑换奖励",records:"积分记录",settings:"系统设置",accounts:"学生账号"}[page];let c=document.getElementById("content");if(page==="home")c.innerHTML=home();if(page==="students")c.innerHTML=studentsPage();if(page==="points")c.innerHTML=pointsPage();if(page==="wheel")c.innerHTML=wheelPage();if(page==="redeem")c.innerHTML=redeemPage();if(page==="records")c.innerHTML=recordsPage();if(page==="settings")c.innerHTML=settingsPage();if(page==="wheel")renderWheel()}
+function render(){today();document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.getElementById("pageTitle").textContent={home:"首页",students:"学生管理",points:"积分管理",wheel:"转盘抽奖",redeem:"兑换奖励",records:"积分记录",settings:"系统设置",accounts:"学生账号"}[page];let c=document.getElementById("content");if(page==="home")c.innerHTML=home();if(page==="students")c.innerHTML=studentsPage();if(page==="points")c.innerHTML=pointsPage();if(page==="wheel")c.innerHTML=wheelPage();if(page==="redeem")c.innerHTML=redeemPage();if(page==="records")c.innerHTML=recordsPage();if(page==="settings")c.innerHTML=settingsPage();if(page==="accounts")c.innerHTML=accountsPage();if(page==="wheel")renderWheel()}
 function home(){let total=s.students.length,sum=s.students.reduce((a,x)=>a+x.p,0),top=[...s.students].sort((a,b)=>b.p-a.p).slice(0,5);return '<div class="grid"><div class="card stat"><span>学生人数</span><b>'+total+'</b><span>当前班级</span></div><div class="card stat"><span>当前总积分</span><b>'+sum+'</b><span>所有学生合计</span></div><div class="card stat"><span>今日日期</span><b style="font-size:19px">'+new Date().toLocaleDateString("zh-CN")+'</b><span>系统自动记录</span></div><div class="card stat"><span>抽奖记录</span><b>'+s.history.length+'</b><span>累计抽奖次数</span></div></div><div class="card"><div class="sectionTitle">⚡ 快捷操作</div><div class="actions"><button class="blue" onclick="go('students')">添加学生</button><button class="green" onclick="go('points')">给学生加分</button><button class="gold" onclick="go('wheel')">开始抽奖</button><button class="pink" onclick="go('redeem')">兑换奖励</button></div></div><div class="card" style="max-width:780px"><div class="sectionTitle">🏆 当前积分排行榜 <span class="muted">· 前 5 名</span></div>'+leaderHTML(top)+'</div><div class="card"><div class="sectionTitle">🐾 我的班级宠物乐园</div><div class="muted" style="margin-bottom:14px">每位学生都有自己的宠物，使用积分喂养可以让宠物升级。</div>'+petCardsHTML()+'</div></div>'}
 function petLevel(exp){return Math.floor(Math.max(0,Number(exp)||0)/50)+1}
 function petProgress(exp){return Math.max(0,Number(exp)||0)%50}
@@ -110,29 +113,9 @@ function currentWinner(x,i){
 function closeWinner(){document.getElementById("winnerModal").style.display="none"}
 function saveAccount(i){let id=document.getElementById("aid"+i).value.trim(),pw=document.getElementById("apw"+i).value;if(!id||!pw)return alert("请输入学生ID和密码");if(s.students.some((x,j)=>j!==i&&x.loginId===id))return alert("这个学生ID已经被使用");s.students[i].loginId=id;s.students[i].password=pw;save();alert("账号已保存")}
 function showStudentLogin(){loginForms.classList.remove("hide");loginForms.innerHTML='<h3>👨‍🎓 学生登录</h3><input id="loginId" placeholder="学生 ID"><input id="loginPw" type="password" placeholder="密码"><div id="loginErr" class="loginErr"></div><button class="blue" style="width:100%" onclick="studentLogin()">登录</button><button class="gray" style="width:100%;margin-top:8px" onclick="backLogin()">返回</button>'}
-function showTeacherLogin(){
-  const loginForms=document.getElementById("loginForms");
-  if(!loginForms)return;
-  loginForms.classList.remove("hide");
-  loginForms.innerHTML='<h3>👨‍🏫 教师后台</h3><input id="teacherPw" type="password" placeholder="教师密码" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')teacherLogin()"><div id="loginErr" class="loginErr"></div><button class="blue" style="width:100%" onclick="teacherLogin()">进入后台</button><button class="gray" style="width:100%;margin-top:8px" onclick="backLogin()">返回</button>';
-  document.getElementById("teacherPw").focus();
-}
-function backLogin(){const loginForms=document.getElementById("loginForms");if(loginForms){loginForms.classList.add("hide");loginForms.innerHTML=""}}
-function teacherLogin(){
-  const input=document.getElementById("teacherPw");
-  const err=document.getElementById("loginErr");
-  const pw=input?input.value.trim():"";
-  const correct=String(s.teacherPassword||"123456");
-  if(pw!==correct){
-    if(err)err.textContent=pw?"密码错误，请重新输入":"请输入教师密码";
-    if(input)input.focus();
-    return;
-  }
-  document.getElementById("loginScreen").classList.add("hide");
-  document.getElementById("teacherApp").classList.remove("hide");
-  page="home";
-  render();
-}
+function showTeacherLogin(){loginForms.classList.remove("hide");loginForms.innerHTML='<h3>👨‍🏫 教师后台</h3><input id="teacherPw" type="password" placeholder="教师密码"><div id="loginErr" class="loginErr"></div><button class="blue" style="width:100%" onclick="teacherLogin()">进入后台</button><button class="gray" style="width:100%;margin-top:8px" onclick="backLogin()">返回</button>'}
+function backLogin(){loginForms.classList.add("hide");loginForms.innerHTML=""}
+function teacherLogin(){let pw=document.getElementById("teacherPw").value;if(pw!==s.teacherPassword){document.getElementById("loginErr").textContent="教师密码错误";return}document.getElementById("loginScreen").classList.add("hide");document.getElementById("teacherApp").classList.remove("hide");render()}
 function studentLogin(){let id=document.getElementById("loginId").value.trim(),pw=document.getElementById("loginPw").value,i=s.students.findIndex(x=>x.loginId===id&&x.password===pw);if(i<0){document.getElementById("loginErr").textContent="学生 ID 或密码错误";return}document.getElementById("loginScreen").classList.add("hide");document.getElementById("teacherApp").classList.add("hide");showStudentPortal(i)}
 function showStudentPortal(i){let x=s.students[i];x.pet=x.pet||{name:"我的宠物",type:"🐶",exp:0};let logs=[...(x.logs||[])].reverse().map(l=>'<div class="historyItem"><span>'+esc(l.reason)+'<div class="muted">'+esc(l.t)+'</div></span><b style="color:'+(l.delta>=0?'#36a967':'#ee6677')+'">'+(l.delta>0?"+":"")+l.delta+' 分</b></div>').join(""),reds=[...(x.redeemed||[])].reverse().map(r=>'<div class="historyItem"><span>🎁 '+esc(r.n)+'</span><span>-'+r.p+' 分 · '+esc(r.t)+'</span></div>').join("");document.getElementById("studentPortal").classList.remove("hide");document.getElementById("studentPortal").innerHTML='<div class="studentPortal"><div class="portalTop"><div><div class="pageTitle">👋 '+esc(x.n)+'</div><div class="date">我的学习积分</div></div><button class="gray" onclick="studentLogout()">退出登录</button></div><div class="portalCard" style="text-align:center"><div class="muted">当前积分</div><div class="bigPoints">'+x.p+' 分</div><div class="muted">累计获得 '+x.earned+' 分</div></div><div class="portalCard"><div class="petTop"><div class="petEmoji">'+petStage(x)+'</div><div style="flex:1"><div class="petName">'+esc(x.pet.name||"我的宠物")+'</div><div class="muted">我的专属宠物 · Lv.'+petLevel(x.pet.exp)+'</div><div class="petLevel">'+x.pet.exp+' XP · '+petProgress(x.pet.exp)+'/50</div></div></div><div class="progress" style="margin-top:12px"><i style="width:'+(petProgress(x.pet.exp)*2)+'%"></i></div><div class="muted" style="margin-top:10px">使用 2 积分喂养一次，宠物获得 +10 XP。</div><button class="gold" style="margin-top:12px;width:100%" onclick="feedPet('+i+')">🍖 用 2 分喂养我的宠物</button></div><div class="portalCard"><div class="sectionTitle">📋 我的积分记录</div>'+(logs||'<div class="empty">暂无积分记录</div>')+'</div><div class="portalCard"><div class="sectionTitle">🎁 我的兑换记录</div>'+(reds||'<div class="empty">暂无兑换记录</div>')+'</div></div>'}
 function teacherLogout(){document.getElementById("teacherApp").classList.add("hide");document.getElementById("loginScreen").classList.remove("hide");backLogin()}function studentLogout(){document.getElementById("studentPortal").classList.add("hide");document.getElementById("loginScreen").classList.remove("hide");document.getElementById("loginId").value="";document.getElementById("loginPw").value="";document.getElementById("loginErr").textContent=""}
