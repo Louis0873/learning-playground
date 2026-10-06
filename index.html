@@ -70,11 +70,16 @@ function redeemPage(){
     redeemStudent=null;
     return '<div class="card"><div class="empty">请选择有效的学生</div></div>';
   }
-  return '<div class="card"><div class="sectionTitle">🎁 兑换奖励</div><div class="muted" style="margin-bottom:15px">兑换模块独立选择学生，不读取个人档案的学生选择。</div><div class="row"><select id="redeemStudent" onchange="setRedeemStudent(this.value)">'+studentOptions+'</select></div></div><div class="card"><h2>兑换学生：👤 '+esc(x.n)+'　<span class="points">'+x.p+' 分</span></h2><div class="grid" style="grid-template-columns:repeat(3,1fr)">'+rewards.map(r=>'<div class="card" style="margin:0;border:1px solid #eee"><div style="font-size:24px">🎁</div><b>'+esc(r.n)+'</b><div class="muted" style="margin:8px 0">'+r.p+' 分</div><button class="gold" onclick="redeem('+redeemStudent+','+r.p+',\\''+jsq(r.n)+'\\')">立即兑换</button></div>').join("")+'</div><hr><div class="sectionTitle">本次兑换记录</div>'+((x.redeemed||[]).slice().reverse().map(r=>'<div class="historyItem"><span>🎁 '+esc(r.n)+'</span><span>-'+r.p+' 分 · '+esc(r.t)+'</span></div>').join("")||'<div class="empty">暂无兑换记录</div>')+'</div>';
+  return '<div class="card"><div class="sectionTitle">🎁 兑换奖励</div><div class="muted" style="margin-bottom:15px">兑换模块独立选择学生，不读取个人档案的学生选择。</div><div class="row"><select id="redeemStudent" onchange="setRedeemStudent(this.value)">'+studentOptions+'</select></div></div><div class="card"><h2>兑换学生：👤 '+esc(x.n)+'　<span class="points">'+x.p+' 分</span></h2><div class="grid" style="grid-template-columns:repeat(3,1fr)">'+rewards.map((r,rIndex)=>'<div class="card" style="margin:0;border:1px solid #eee"><div style="font-size:24px">🎁</div><b>'+esc(r.n)+'</b><div class="muted" style="margin:8px 0">'+r.p+' 分</div><button class="gold" onclick="redeemByRewardIndex('+redeemStudent+','+rIndex+')">立即兑换</button></div>').join("")+'</div><hr><div class="sectionTitle">本次兑换记录</div>'+((x.redeemed||[]).slice().reverse().map(r=>'<div class="historyItem"><span>🎁 '+esc(r.n)+'</span><span>-'+r.p+' 分 · '+esc(r.t)+'</span></div>').join("")||'<div class="empty">暂无兑换记录</div>')+'</div>';
 }
 function setRedeemStudent(v){
   redeemStudent=v===""?null:Number(v);
   render();
+}
+function redeemByRewardIndex(studentIndex,rewardIndex){
+  let r=rewards[Number(rewardIndex)];
+  if(!r)return;
+  redeem(Number(studentIndex),Number(r.p),r.n);
 }
 function accountsPage(){let out='<div class="card"><div class="sectionTitle">🔐 学生账号管理</div><div class="muted" style="margin-bottom:14px">给学生设置 ID 和密码。学生可以在登录页查看自己的积分、积分历史和兑换记录。</div>';if(!s.students.length){out+='<div class="empty">请先添加学生</div>'}else{s.students.forEach(function(x,i){out+='<div class="studentRow"><div class="studentInfo"><div class="avatar">'+esc(x.n[0]||"?")+'</div><div><b>'+esc(x.n)+'</b><div class="muted">ID：'+esc(x.loginId||"未设置")+'</div></div></div><div class="row" style="max-width:430px"><input id="aid'+i+'" placeholder="学生ID" value="'+esc(x.loginId||"")+'"><input id="apw'+i+'" placeholder="密码" value="'+esc(x.password||"")+'"><button class="blue" onclick="saveAccount('+i+')">保存</button></div></div>'})}out+='</div>';return out}
 function recordsPage(){let a=s.history.slice().reverse();return '<div class="card"><div class="sectionTitle">▤ 全班积分 / 抽奖记录</div>'+(a.length?a.map(x=>'<div class="historyItem"><div><b>'+esc(x.n)+'</b><div class="muted">'+esc(x.r)+'</div></div><span>'+x.t+'</span></div>').join(""):'<div class="empty">暂无记录</div>')+'</div>'}
