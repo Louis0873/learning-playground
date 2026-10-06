@@ -117,7 +117,7 @@ function showStudentLogin(){loginForms.classList.remove("hide");loginForms.inner
 function showTeacherLogin(){loginForms.classList.remove("hide");loginForms.innerHTML='<h3>👨‍🏫 教师后台</h3><input id="teacherPw" type="password" placeholder="教师密码"><div id="loginErr" class="loginErr"></div><button class="blue" style="width:100%" onclick="teacherLogin()">进入后台</button><button class="gray" style="width:100%;margin-top:8px" onclick="backLogin()">返回</button>'}
 function backLogin(){loginForms.classList.add("hide");loginForms.innerHTML=""}
 function teacherLogin(){
-  const input=document.getElementById("teacherPassword");
+  const input=document.getElementById("teacherPw");
   const err=document.getElementById("loginErr");
   const pw=input?input.value.trim():"";
   const correct=String(s.teacherPassword||"123456");
