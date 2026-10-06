@@ -8,10 +8,11 @@
 </style>
 </head>
 <body>
-<div id="loginScreen" class="loginScreen"><div class="loginBox"><h1>📚 学习乐园</h1><div class="muted">请选择登录入口</div>
-
-<button class="gray" style="width:100%" onclick="showTeacherLogin()">👨‍🏫 教师后台</button>
-<div id="loginForms" class="hide"></div></div></div>
+<div id="loginScreen" class="loginScreen"><div class="loginBox"><h1>📚 学习乐园</h1><div class="muted">教师后台登录</div>
+<input id="teacherPassword" type="password" placeholder="请输入教师密码" autocomplete="current-password" onkeydown="if(event.key==='Enter')teacherLogin()">
+<button class="gold" style="width:100%" onclick="teacherLogin()">🔐 登录教师后台</button>
+<div class="loginErr" id="loginErr"></div>
+</div></div>
 <div id="studentPortal" class="hide"></div>
 <div id="teacherApp" class="app hide">
 <aside class="side"><div class="brand">📚 学习乐园<small>Learning Playground</small></div><div class="nav">
