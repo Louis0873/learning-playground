@@ -1,0 +1,166 @@
+from pathlib import Path
+
+path = Path("/mnt/data/class_points_lottery.html")
+html = r'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>班级积分抽奖系统 Pro</title>
+<style>
+:root{--bg:#fff0e8;--card:#fff;--blue:#5d91e8;--green:#65c978;--pink:#f16c8e;--gold:#ffc83d;--purple:#8d63c7;--text:#4d475d;--muted:#8f8997;--line:#eee5df}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Microsoft YaHei",sans-serif;color:var(--text);background:linear-gradient(135deg,#fff8f3,#ffe7dc);min-height:100vh}
+.container{max-width:1500px;margin:auto;padding:22px}.title{text-align:center;color:#ef668e;font-size:34px;margin:5px 0 22px;text-shadow:2px 2px #ffd88e}
+.grid{display:grid;grid-template-columns:290px minmax(420px,1fr) 430px;gap:18px}.card{background:#fff;border-radius:22px;padding:20px;box-shadow:0 8px 25px #8d716122;border:1px solid #f0e7e2}
+h2{margin:0 0 15px;font-size:20px;color:#654d7d}.row{display:flex;gap:8px}.row>*{flex:1}
+input,select{width:100%;padding:11px;border:1px solid #ddd4cf;border-radius:10px;outline:none;background:white}button{border:0;border-radius:10px;padding:10px 13px;font-weight:bold;cursor:pointer}
+.blue{background:var(--blue);color:white}.green{background:var(--green);color:white}.pink{background:var(--pink);color:white}.gold{background:var(--gold);color:#76540b}.gray{background:#eee;color:#555}.red{background:#ff7180;color:#fff}
+.stat{display:flex;gap:10px;margin:14px 0}.stat div{flex:1;color:#fff;text-align:center;border-radius:12px;padding:14px;font-weight:bold}.stat .a{background:#67c978}.stat .b{background:#5b90e8}
+.list{max-height:530px;overflow:auto}.student{display:flex;justify-content:space-between;align-items:center;padding:10px;margin:7px 0;border:1px solid #eee3dd;border-radius:11px}.student.active{background:#fff2b8;border-color:#ffc72f}.name{font-weight:bold}.sub{font-size:12px;color:#888;margin-top:3px}
+.wheelbox{text-align:center}.current{background:linear-gradient(90deg,#5d91e8,#6ba3ef);color:white;border-radius:12px;padding:13px;font-weight:bold}.pointer{margin:4px auto -6px;width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:30px solid #f0784b;position:relative;z-index:3}
+.wheel{width:350px;height:350px;border-radius:50%;margin:0 auto 18px;border:12px solid #ffe0a1;box-shadow:0 5px 15px #a7774c55;position:relative;background:conic-gradient(#ef5b54 0 45deg,#4e94df 45deg 90deg,#31c76e 90deg 135deg,#f47b91 135deg 180deg,#ffd044 180deg 225deg,#68c879 225deg 270deg,#4f91e8 270deg 315deg,#a35bc0 315deg 360deg)}
+.wheel:before{content:"";position:absolute;inset:35px;border-radius:50%;border:2px dashed #fff9}
+.wheel:after{content:"GO!";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:65px;height:65px;border-radius:50%;background:#ffd447;border:5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#805e10}
+.draw{font-size:20px;padding:14px 42px;border-radius:28px;background:linear-gradient(90deg,#f36c91,#ff7d69);color:#fff;box-shadow:0 6px 15px #e8798d55}
+.result{margin:15px 0;padding:13px;border:2px solid #ffd12e;background:#fff9d2;border-radius:12px}.toggle{display:flex;justify-content:space-between;align-items:center;margin-top:15px}
+.switch{width:47px;height:26px;background:#ccc;border-radius:20px;padding:3px;cursor:pointer}.switch i{display:block;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.switch.on{background:#64c979}.switch.on i{margin-left:21px}
+.prize{display:grid;grid-template-columns:1fr 70px 70px 40px;gap:7px;align-items:center;border-bottom:1px solid #eee;padding:8px 0}.prize input{padding:8px}
+.leader{max-height:300px;overflow:auto}.rank{display:flex;align-items:center;gap:9px;padding:9px;border-bottom:1px solid #eee}.rankno{width:28px;text-align:center;font-weight:bold;color:#e5a02e}.badge{margin-left:auto;background:#fff0b7;padding:5px 8px;border-radius:13px;font-weight:bold}
+.bottom{margin-top:18px}.history{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-height:220px;overflow:auto}.record{border:1px dashed #e3b6c3;border-radius:10px;padding:10px;text-align:center;background:#fffafa}.record small{color:#999}.empty{text-align:center;color:#aaa;padding:20px}
+.tabs{display:flex;gap:7px;margin-bottom:13px}.tab{background:#eee;color:#555}.tab.on{background:#654d7d;color:#fff}
+.modal{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;z-index:20}.modal.show{display:flex}.modalbox{width:min(520px,92vw);background:white;border-radius:20px;padding:24px}.modalbox h3{text-align:center;margin-top:0}
+.notice{font-size:13px;color:#777;background:#faf7f5;border-radius:10px;padding:10px;margin:10px 0}
+@media(max-width:1100px){.grid{grid-template-columns:1fr 1fr}.grid .right{grid-column:1/-1}}
+@media(max-width:720px){.container{padding:10px}.grid{grid-template-columns:1fr}.wheel{width:285px;height:285px}.history{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="title">🎓 班级积分抽奖系统 🎁</div>
+
+<div class="grid">
+<section class="card">
+<h2>👥 学生名单</h2>
+<div class="row"><input id="studentInput" placeholder="输入学生姓名…"><button class="green" onclick="addStudent()">添加</button></div>
+<div class="stat"><div class="a"><span id="total">0</span><br>总人数</div><div class="b"><span id="pointsTotal">0</span><br>总积分</div></div>
+<div class="row"><button class="blue" onclick="loadDemo()">加载示例</button><button class="green" onclick="clearStudents()">清空名单</button></div>
+<div class="notice">💡 可直接修改学生积分；抽奖后也可以自动加积分。</div>
+<div id="studentList" class="list"></div>
+</section>
+
+<section class="card wheelbox">
+<h2>🎡 随机抽学生</h2>
+<div class="current">当前抽奖：<span id="current">尚未抽取</span></div>
+<div class="pointer"></div><div class="wheel" id="wheel"></div>
+<button class="draw" onclick="drawStudent()">开始抽奖</button>
+<div id="result" class="result">🎁 抽中的学生会显示在这里</div>
+<div class="toggle"><span>抽中后自动奖励积分</span><div id="autoSwitch" class="switch on" onclick="toggleAuto()"><i></i></div></div>
+<div style="margin-top:12px" class="row"><button class="gray" onclick="openSettings()">⚙️ 抽奖设置</button><button class="gold" onclick="redeemSelected()">🎁 兑换奖励</button></div>
+</section>
+
+<section class="card right">
+<h2>🎁 奖励池管理</h2>
+<div class="row"><input id="prizeName" placeholder="奖励名称"><input id="prizePoints" type="number" placeholder="积分"><button class="green" onclick="addPrize()">添加</button></div>
+<div id="prizeList"></div>
+<hr style="border:0;border-top:1px solid #eee;margin:18px 0">
+<h2>🏆 积分排行榜</h2><div id="leaderboard" class="leader"></div>
+</section>
+</div>
+
+<section class="card bottom">
+<h2>🏆 抽奖 / 积分记录</h2>
+<div id="history" class="history"></div>
+<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="blue" onclick="exportData()">📊 导出数据</button>
+<button class="green" onclick="importData()">📥 导入数据</button>
+<button class="pink" onclick="resetAll()">♻️ 重置数据</button>
+</div>
+</section>
+</div>
+
+<div class="modal" id="settingsModal"><div class="modalbox">
+<h3>⚙️ 抽奖设置</h3>
+<label>抽奖模式</label>
+<select id="drawMode" style="margin:8px 0 14px"><option value="repeat">允许重复抽到</option><option value="once">本轮不重复抽取</option></select>
+<label>每次抽中自动增加积分</label>
+<input id="autoPoints" type="number" min="0" value="1" style="margin:8px 0 14px">
+<div class="row"><button class="gray" onclick="closeSettings()">取消</button><button class="blue" onclick="saveSettings()">保存设置</button></div>
+</div></div>
+
+<script>
+const KEY="classLotteryProV2";
+let state=JSON.parse(localStorage.getItem(KEY)||"null")||{
+ students:[],prizes:[
+  {name:"表扬贴纸",points:1,stock:999},{name:"课堂小奖励",points:3,stock:999},
+  {name:"免一次作业",points:5,stock:10},{name:"小礼物",points:10,stock:8}
+ ],history:[],auto:true,drawMode:"repeat",autoPoints:1,roundPool:[]
+};
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function render(){
+ document.getElementById("total").textContent=state.students.length;
+ document.getElementById("pointsTotal").textContent=state.students.reduce((a,b)=>a+b.points,0);
+ document.getElementById("autoSwitch").classList.toggle("on",state.auto);
+ document.getElementById("studentList").innerHTML=state.students.length?state.students.map((s,i)=>`<div class="student" id="stu-${i}">
+ <div><div class="name">${esc(s.name)}</div><div class="sub">积分：${s.points}</div></div>
+ <div style="display:flex;gap:4px"><button class="green" onclick="changePoints(${i},1)">+1</button><button class="gray" onclick="changePoints(${i},-1)">-1</button><button class="red" onclick="removeStudent(${i})">×</button></div></div>`).join(""):'<div class="empty">暂无学生，请先添加名单</div>';
+ document.getElementById("prizeList").innerHTML=state.prizes.map((p,i)=>`<div class="prize">
+ <input value="${esc(p.name)}" onchange="editPrize(${i},'name',this.value)">
+ <input type="number" value="${p.points}" onchange="editPrize(${i},'points',this.value)">
+ <input type="number" value="${p.stock}" title="库存" onchange="editPrize(${i},'stock',this.value)">
+ <button class="red" onclick="removePrize(${i})">×</button></div>`).join("");
+ let sorted=[...state.students].sort((a,b)=>b.points-a.points);
+ document.getElementById("leaderboard").innerHTML=sorted.length?sorted.map((s,i)=>`<div class="rank"><span class="rankno">${i+1}</span><b>${esc(s.name)}</b><span class="badge">${s.points} 分</span></div>`).join(""):'<div class="empty">暂无积分</div>';
+ document.getElementById("history").innerHTML=state.history.length?state.history.slice().reverse().map(h=>`<div class="record"><b>${esc(h.name)}</b><br>🎁 ${esc(h.reward)}<br><small>${h.time}</small></div>`).join(""):'<div class="empty" style="grid-column:1/-1">暂无记录</div>';
+}
+function addStudent(){let e=document.getElementById("studentInput"),n=e.value.trim();if(!n)return alert("请输入学生姓名");if(state.students.some(s=>s.name===n))return alert("该学生已存在");state.students.push({name:n,points:0});e.value="";save()}
+function removeStudent(i){if(confirm("确定删除该学生？")){state.students.splice(i,1);save()}}
+function clearStudents(){if(confirm("确定清空学生名单？")){state.students=[];state.roundPool=[];save()}}
+function changePoints(i,n){state.students[i].points=Math.max(0,state.students[i].points+n);save()}
+function addPrize(){let n=document.getElementById("prizeName").value.trim(),p=+document.getElementById("prizePoints").value||0;if(!n)return alert("请输入奖励名称");state.prizes.push({name:n,points:p,stock:10});document.getElementById("prizeName").value="";document.getElementById("prizePoints").value="";save()}
+function editPrize(i,k,v){state.prizes[i][k]=k==="name"?v:Math.max(0,parseInt(v)||0);save()}
+function removePrize(i){state.prizes.splice(i,1);save()}
+function toggleAuto(){state.auto=!state.auto;save()}
+function drawStudent(){
+ if(!state.students.length)return alert("请先添加学生名单");
+ if(state.drawMode==="once" && !state.roundPool.length)state.roundPool=state.students.map((_,i)=>i);
+ if(state.drawMode==="once" && !state.roundPool.length)return alert("本轮已经全部抽完，请重新开始一轮");
+ let pos=state.drawMode==="once"?Math.floor(Math.random()*state.roundPool.length):Math.floor(Math.random()*state.students.length);
+ let idx=state.drawMode==="once"?state.roundPool[pos]:pos,s=state.students[idx];
+ if(state.drawMode==="once")state.roundPool.splice(pos,1);
+ let wheel=document.getElementById("wheel");wheel.style.transition="none";wheel.style.transform="rotate(0deg)";
+ setTimeout(()=>{wheel.style.transition="transform 2.5s cubic-bezier(.12,.75,.2,1)";wheel.style.transform=`rotate(${5+Math.random()*3}turn)`},30);
+ setTimeout(()=>{
+  document.getElementById("current").textContent=s.name;
+  document.getElementById("result").innerHTML=`🎉 <b>${esc(s.name)}</b> 被抽中了！`;
+  document.querySelectorAll(".student").forEach(x=>x.classList.remove("active"));document.getElementById("stu-"+idx)?.classList.add("active");
+  let reward="随机抽学生";
+  if(state.auto){s.points+=state.autoPoints;reward=`抽中奖励（+${state.autoPoints}分）`}
+  state.history.push({name:s.name,reward,time:new Date().toLocaleString("zh-CN")});if(state.history.length>100)state.history.shift();save();
+ },2650);
+}
+function redeemSelected(){
+ let name=document.getElementById("current").textContent,idx=state.students.findIndex(s=>s.name===name);
+ if(idx<0)return alert("请先抽中一位学生");
+ let opts=state.prizes.filter(p=>p.stock>0&&p.points>0);
+ if(!opts.length)return alert("没有可兑换的奖励");
+ let msg=opts.map((p,i)=>`${i+1}. ${p.name} — ${p.points}分（库存${p.stock}）`).join("\n");
+ let pick=prompt(`学生：${name}\n请输入兑换编号：\n\n${msg}`);
+ let p=opts[parseInt(pick)-1];if(!p)return;
+ if(state.students[idx].points<p.points)return alert("积分不足");
+ state.students[idx].points-=p.points;p.stock--;
+ state.history.push({name,reward:"兑换 "+p.name+`（-${p.points}分）`,time:new Date().toLocaleString("zh-CN")});save();
+}
+function loadDemo(){["王浩宇","李梓轩","张辰宇","刘俊熙","陈思源","赵梓涵","林俊杰","黄子恩","吴亦泽","杨博文","周子轩","陈凯文"].forEach(n=>{if(!state.students.some(s=>s.name===n))state.students.push({name:n,points:0})});state.roundPool=[];save()}
+function exportData(){let b=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="班级积分抽奖数据.json";a.click()}
+function importData(){let i=document.createElement("input");i.type="file";i.accept=".json";i.onchange=()=>{let f=new FileReader();f.onload=()=>{try{state=JSON.parse(f.result);save()}catch(e){alert("文件格式错误")}};f.readAsText(i.files[0])};i.click()}
+function resetAll(){if(confirm("确定删除所有学生、积分和抽奖记录吗？")){state={students:[],prizes:state.prizes,history:[],auto:true,drawMode:"repeat",autoPoints:1,roundPool:[]};save()}}
+function openSettings(){document.getElementById("drawMode").value=state.drawMode;document.getElementById("autoPoints").value=state.autoPoints;document.getElementById("settingsModal").classList.add("show")}
+function closeSettings(){document.getElementById("settingsModal").classList.remove("show")}
+function saveSettings(){state.drawMode=document.getElementById("drawMode").value;state.autoPoints=Math.max(0,+document.getElementById("autoPoints").value||0);state.roundPool=[];save();closeSettings()}
+render();
+</script>
+</body>
+</html>'''
+path.write_text(html, encoding="utf-8")
+print(f"已升级完成：{path}")
