@@ -111,11 +111,13 @@ function closeWinner(){document.getElementById("winnerModal").style.display="non
 function saveAccount(i){let id=document.getElementById("aid"+i).value.trim(),pw=document.getElementById("apw"+i).value;if(!id||!pw)return alert("请输入学生ID和密码");if(s.students.some((x,j)=>j!==i&&x.loginId===id))return alert("这个学生ID已经被使用");s.students[i].loginId=id;s.students[i].password=pw;save();alert("账号已保存")}
 function showStudentLogin(){loginForms.classList.remove("hide");loginForms.innerHTML='<h3>👨‍🎓 学生登录</h3><input id="loginId" placeholder="学生 ID"><input id="loginPw" type="password" placeholder="密码"><div id="loginErr" class="loginErr"></div><button class="blue" style="width:100%" onclick="studentLogin()">登录</button><button class="gray" style="width:100%;margin-top:8px" onclick="backLogin()">返回</button>'}
 function showTeacherLogin(){
+  const loginForms=document.getElementById("loginForms");
+  if(!loginForms)return;
   loginForms.classList.remove("hide");
   loginForms.innerHTML='<h3>👨‍🏫 教师后台</h3><input id="teacherPw" type="password" placeholder="教师密码" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')teacherLogin()"><div id="loginErr" class="loginErr"></div><button class="blue" style="width:100%" onclick="teacherLogin()">进入后台</button><button class="gray" style="width:100%;margin-top:8px" onclick="backLogin()">返回</button>';
   document.getElementById("teacherPw").focus();
 }
-function backLogin(){loginForms.classList.add("hide");loginForms.innerHTML=""}
+function backLogin(){const loginForms=document.getElementById("loginForms");if(loginForms){loginForms.classList.add("hide");loginForms.innerHTML=""}}
 function teacherLogin(){
   const input=document.getElementById("teacherPw");
   const err=document.getElementById("loginErr");
