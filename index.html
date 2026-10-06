@@ -43,14 +43,24 @@ function showTeacherLogin(){
   document.getElementById("teacherPassword").focus();
 }
 function teacherLogin(){
-  const pw=document.getElementById("teacherPassword").value;
-  if(pw!==(s.teacherPassword||"123456")){
-    document.getElementById("loginErr").textContent="密码错误，请重新输入";
+  const input=document.getElementById("teacherPassword");
+  const err=document.getElementById("loginErr");
+  const pw=input ? input.value.trim() : "";
+  const data=JSON.parse(localStorage.getItem(K)||"null");
+  const correct=(data&&data.teacherPassword)||s.teacherPassword||"123456";
+  if(!pw){if(err)err.textContent="请输入教师密码";return;}
+  if(String(pw)!==String(correct)){
+    if(err)err.textContent="密码错误，请重新输入";
+    if(input){input.value="";input.focus();}
     return;
   }
+  if(data) s=data;
+  s.teacherPassword=correct;
+  localStorage.setItem(K,JSON.stringify(s));
   document.getElementById("loginScreen").classList.add("hide");
   document.getElementById("teacherApp").classList.remove("hide");
-  go("home");
+  page="home";
+  render();
 }
 function recalcStudent(x){
   x.logs=x.logs||[];
